@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import gsap from "gsap";
 
 
 const canvas = document.querySelector("#experience-canvas");
@@ -107,8 +108,20 @@ window.addEventListener("mousemove", (e)=> {
     pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
 });
 
-window.addEventListener("click", (e)=> {
-    if(currentIntersects.length > 0){
+window.addEventListener("touchstart", (e)=>{
+    e.preventDefault();
+    pointer.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+}, {passive:false}
+);
+window.addEventListener("touchend", (e)=>{
+    e.preventDefault();
+    handleRaycasterInteraction();
+}, {passive:false}
+);
+
+function handleRaycasterInteraction(){
+     if(currentIntersects.length > 0){
         const object = currentIntersects[0].object;
 
         Object.entries(links).forEach(([key, url]) =>{
@@ -121,7 +134,9 @@ window.addEventListener("click", (e)=> {
             }
         });
     }
-});
+};
+
+window.addEventListener("click", handleRaycasterInteraction);
 
 //for loading the date files
 const today = new Date().getDate();
