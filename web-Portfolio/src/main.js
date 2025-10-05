@@ -153,13 +153,11 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-    45,
+    35,
     sizes.width / sizes.height,
     0.1,  
     1000  
 );
-
-//camera positioning and rotation
 camera.position.set(23.40, 9.14, 0.86);
 
 const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
