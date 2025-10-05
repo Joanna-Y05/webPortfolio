@@ -44,4 +44,22 @@
   display: none;
   background-color: vars.$base-pink;
 }
+/*
+.loading-screen{
+  @include vars.centered;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 108vw;
+  height: 108vh;
+  margin-left: -54vw;
+  margin-top: -54vh;
+  overflow: hidden;
+  z-index: 9999;
+  border: 8px solid vars.$base-pink;
+  background-color:  vars.$base-black;
+  transform: perspective(1000px);
+  border-radius:48px;
+}
+  */ 
 
