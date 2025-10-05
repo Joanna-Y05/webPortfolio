@@ -76,7 +76,18 @@ const glassMaterial = new THREE.MeshPhysicalMaterial({
                         envMapIntensity: 1,
                         depthWrite: false,
                     });
+//when i have a video available i will add it here to my screens so for now the screens will be set to black
+/*const videoElement = document.createElement("video");
+videoElement.src = "/textures/videos/filename";
+videoElement.loop = true;
+videoElement.muted = true;
+videoElement.autoplay = true;
+videoElement.play();
 
+const videoTexture = new THREE.videoTexture(videoElement);
+videoTexture.colorSpace = THREE.SRGBColorSpace;
+videoTexture.flipY = true;
+*/
 loader.load("/models/room_portfolio.glb", (glb)=>{
     glb.scene.traverse(child=>{
         if(child.isMesh){
@@ -99,7 +110,24 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                 else if (child.name.includes("Backdrop")){
                     child.material = new THREE.MeshBasicMaterial({
                         color: 0xbfeeff,
-                    })
+                    });
+                }
+                //screens
+                else if (child.name.includes("screen")){
+                    child.material = new THREE.MeshBasicMaterial({
+                        //map: videoTexture,
+                        color: 0x444444,
+                    });
+
+                }
+                else if(child.name.includes("curtains")){
+                    child.material = new THREE.MeshBasicMaterial({
+                        color: 0xf2f2f2,
+                        opacity: 0.6,
+                        transparent: true,
+                        depthWrite: false,
+                    });
+
                 }
 
                 else{
@@ -128,17 +156,11 @@ const camera = new THREE.PerspectiveCamera(
     45,
     sizes.width / sizes.height,
     0.1,  
-    1000 
+    1000  
 );
 
 //camera positioning and rotation
 camera.position.set(23.40, 9.14, 0.86);
-
-camera.rotation.set(
-    THREE.MathUtils.degToRad(-92.65),
-    THREE.MathUtils.degToRad(80.66),
-    THREE.MathUtils.degToRad(92.69)
-);
 
 const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
 renderer.setSize( sizes.width, sizes.height );
@@ -155,7 +177,11 @@ const controls = new OrbitControls( camera, renderer.domElement );
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.update();
-
+controls.target.set(
+    -1.5916472956105827,
+    4.916293847154762,
+    0.4244240899087452
+);
 
 //Event Listeners
 window.addEventListener("resize", ()=>{
@@ -177,16 +203,13 @@ const render = () => {
     controls.update();
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
-/*
-   console.log(
-    `Camera position: x=${camera.position.x.toFixed(2)}, y=${camera.position.y.toFixed(2)}, z=${camera.position.z.toFixed(2)}`
-  );
-   console.log(
-    `Camera rotation: x=${THREE.MathUtils.radToDeg(camera.rotation.x).toFixed(2)}°, y=${THREE.MathUtils.radToDeg(camera.rotation.y).toFixed(2)}°, z=${THREE.MathUtils.radToDeg(camera.rotation.z).toFixed(2)}°`
-  );
-*/
-  //this section is used to test where to put the camera after i have positioned it where i need in browser
 
+  //this section is used to test where to put the camera after i have positioned it where i need in browser
+/*
+  console.log(camera.position);
+  console.log("00000");
+  console.log(controls.target);
+*/
     renderer.render(scene, camera);
 
     window.requestAnimationFrame(render);
