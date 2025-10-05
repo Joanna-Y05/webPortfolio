@@ -14,11 +14,12 @@ const sizes = {
 
 const raycasterObjects = [];
 let currentIntersects = [];
+let currentHoveredObject = null;
 
 const links = {
     //Github: "https://github.com/Joanna-Y05?tab=overview&from=2025-10-01&to=2025-10-03",
-    computer_right: "https://joannaa23.notion.site/My-Maker-Portfolio-908ec956027d468c896f24f149209271",
-    computer_left: "https://www.linkedin.com/in/joanna-ayeni-a58108254/",
+    screen_right: "https://joannaa23.notion.site/My-Maker-Portfolio-908ec956027d468c896f24f149209271",
+    screen_left: "https://www.linkedin.com/in/joanna-ayeni-a58108254/",
 };
 
 const raycaster = new THREE.Raycaster();
@@ -154,7 +155,15 @@ const dateTexture = textureLoader.load(
 loader.load("/models/room_portfolio.glb", (glb)=>{
     glb.scene.traverse(child=>{
         if(child.isMesh){
+            //raycaster hover objects
+            if(child.name.includes("Raycaster")){
+                raycasterObjects.push(child);
 
+            //extra stuff for hover
+            child.userData.initialScale = new THREE.Vector3().copy(child.scale);
+            child.userData.initialRotation = new THREE.Euler().copy(child.rotation);
+            child.userData.initialPosition = new THREE.Vector3().copy(child.position);
+            }
              //water objects
                 if (child.name.includes("water")){
                     child.material = new THREE.MeshBasicMaterial({
@@ -218,10 +227,6 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                 });
                 child.material = material;
 
-                if(child.name.includes("Raycaster")){
-                    raycasterObjects.push(child);
-                };
-
                  if (child.material.map) {
                     child.material.map.minFilter = THREE.LinearFilter;
                     }
@@ -256,6 +261,21 @@ scene.add( cube );
 
 //orbit controls
 const controls = new OrbitControls( camera, renderer.domElement );
+
+//up and down
+controls.minPolarAngle = Math.PI/2.5;
+controls.maxPolarAngle = Math.PI/2;
+
+//left and right
+controls.minAzimuthAngle = Math.PI/2.4;
+controls.maxAzimuthAngle = Math.PI/2;
+
+//zoom
+controls.minDistance = 5;
+controls.maxDistance = 24;
+
+controls.enablePan = false;
+
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.update();
@@ -279,7 +299,55 @@ window.addEventListener("resize", ()=>{
     renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 });
 
-function animate(){}
+function playHoverAnimation (object, isHovering){
+   gsap.killTweensOf(object.scale);
+
+   if(object.name.includes("chair")){
+     if(isHovering){
+        gsap.to(object.rotation, {
+            y: object.userData.initialRotation.y + Math.PI/8,
+            duration: 0.5,
+            ease: "bounce.out(1.8)",
+            onComplete: ()=>{
+            }
+        });
+    }
+    else{
+          gsap.to(object.rotation, {
+            y: object.userData.initialRotation.y,
+            duration: 0.5,
+            ease: "bounce.out(1.8)",
+            onComplete: ()=>{
+            }
+        });
+    }
+   }
+   else{
+    if(isHovering){
+        gsap.to(object.scale, {
+            x: object.userData.initialScale.x * 1.2,
+            y: object.userData.initialScale.y * 1.2,
+            z: object.userData.initialScale.z * 1.2,
+            duration: 0.5,
+            ease: "bounce.out(1.8)",
+            onComplete: ()=>{
+            }
+        });
+    }
+    else{
+          gsap.to(object.scale, {
+            x: object.userData.initialScale.x ,
+            y: object.userData.initialScale.y ,
+            z: object.userData.initialScale.z ,
+            duration: 0.5,
+            ease: "bounce.out(1.8)",
+            onComplete: ()=>{
+            }
+        });
+    }
+}
+}
+
 
 const render = () => {
     controls.update();
@@ -297,13 +365,26 @@ const render = () => {
 raycaster.setFromCamera(pointer, camera);
 currentIntersects = raycaster.intersectObjects(raycasterObjects);
 
+/* this is for testing purposes
 for (let i = 0; i < currentIntersects.length; i++){
     currentIntersects[i].object.material.color.set(0xff0000);
 }
+    */
 
 if(currentIntersects.length>0){
     const currentIntersectObject = currentIntersects[0].object;
 
+    if(currentIntersectObject.name.includes("Raycaster")){
+         if(currentIntersectObject !== currentHoveredObject ){
+
+            if(currentHoveredObject){
+                playHoverAnimation(currentHoveredObject, false);
+            }
+
+            playHoverAnimation(currentIntersectObject, true);
+            currentHoveredObject = currentIntersectObject;
+         }
+    }
     //uncomment this when i add pointer as an id to the computer screen
     /*if(currentIntersectObject.name.includes("Pointer")){
         document.body.style.cursor = "pointer";
@@ -314,6 +395,10 @@ if(currentIntersects.length>0){
 document.body.style.cursor = "pointer";
 }
 else{
+    if(currentHoveredObject){
+        playHoverAnimation(currentHoveredObject, false);
+        currentHoveredObject = null;
+    }
     document.body.style.cursor = "default";
 }
 
