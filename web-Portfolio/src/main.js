@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { roughness, specularColor } from 'three/tsl';
 
 
 const canvas = document.querySelector("#experience-canvas");
@@ -11,6 +10,12 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
 };
+
+const raycasterObjects = [];
+let currentIntersects = [];
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
 
 //loaders
 const textureLoader = new THREE.TextureLoader();
@@ -76,6 +81,7 @@ const glassMaterial = new THREE.MeshPhysicalMaterial({
                         envMapIntensity: 1,
                         depthWrite: false,
                     });
+
 //when i have a video available i will add it here to my screens so for now the screens will be set to black
 /*const videoElement = document.createElement("video");
 videoElement.src = "/textures/videos/filename";
@@ -88,6 +94,12 @@ const videoTexture = new THREE.videoTexture(videoElement);
 videoTexture.colorSpace = THREE.SRGBColorSpace;
 videoTexture.flipY = true;
 */
+
+//for raycasting
+window.addEventListener("mousemove", (e)=> {
+    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+});
 
 //for loading the date files
 const today = new Date().getDate();
@@ -153,6 +165,7 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                         side: THREE.DoubleSide,
                     });
                      child.material = material;
+                     //handles flipping and rotating the texture
                      dateTexture.center.set(0.5, 0.5);  
                      dateTexture.rotation = Math.PI / 2;
                      dateTexture.repeat.x = -1;  
@@ -167,6 +180,10 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                     map: loadedTextures.day[key],
                 });
                 child.material = material;
+
+                if(child.name.includes("Raycaster")){
+                    raycasterObjects.push(child);
+                };
 
                  if (child.material.map) {
                     child.material.map.minFilter = THREE.LinearFilter;
@@ -194,11 +211,11 @@ const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
 renderer.setSize( sizes.width, sizes.height );
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+/*const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
-
+*/
 
 //orbit controls
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -229,15 +246,31 @@ function animate(){}
 
 const render = () => {
     controls.update();
-    cube.rotation.x += 0.01;
+    /*cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
-
+    */
   //this section is used to test where to put the camera after i have positioned it where i need in browser
 /*
   console.log(camera.position);
   console.log("00000");
   console.log(controls.target);
 */
+
+//raycaster
+raycaster.setFromCamera(pointer, camera);
+currentIntersects = raycaster.intersectObjects(raycasterObjects);
+
+for (let i = 0; i < currentIntersects.length; i++){
+    currentIntersects[i].object.material.color.set(0xff0000);
+}
+
+if(currentIntersects.length>0){
+    document.body.style.cursor = "pointer";
+}
+else{
+    document.body.style.cursor = "default";
+}
+
     renderer.render(scene, camera);
 
     window.requestAnimationFrame(render);
