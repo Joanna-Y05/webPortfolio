@@ -88,6 +88,20 @@ const videoTexture = new THREE.videoTexture(videoElement);
 videoTexture.colorSpace = THREE.SRGBColorSpace;
 videoTexture.flipY = true;
 */
+
+//for loading the date files
+const today = new Date().getDate();
+
+const fileName = `date_${today}.webp`;
+console.log("Loading texture for today: ${fileName}");
+
+const dateTexture = textureLoader.load(
+    `/images/dates/${fileName}`,
+    () => console.log("texture loaded correctly"),
+    undefined,
+    (err) => console.error("error loaidng texture:", err)
+);
+
 loader.load("/models/room_portfolio.glb", (glb)=>{
     glb.scene.traverse(child=>{
         if(child.isMesh){
@@ -120,6 +134,7 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                     });
 
                 }
+                //curtains
                 else if(child.name.includes("curtains")){
                     child.material = new THREE.MeshBasicMaterial({
                         color: 0xf2f2f2,
@@ -128,6 +143,21 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                         depthWrite: false,
                     });
 
+                }
+                //date texture
+                else if(child.name.includes("date")){
+                    const material = new THREE.MeshBasicMaterial({
+                        map: dateTexture,
+                        transparent:true,
+                        alphaTest: 0.1,
+                        side: THREE.DoubleSide,
+                    });
+                     child.material = material;
+                     dateTexture.center.set(0.5, 0.5);  
+                     dateTexture.rotation = Math.PI / 2;
+                     dateTexture.repeat.x = -1;  
+                     child.material.needsUpdate = true;
+                    
                 }
 
                 else{
