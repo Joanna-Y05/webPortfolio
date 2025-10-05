@@ -14,6 +14,12 @@ const sizes = {
 const raycasterObjects = [];
 let currentIntersects = [];
 
+const links = {
+    //Github: "https://github.com/Joanna-Y05?tab=overview&from=2025-10-01&to=2025-10-03",
+    computer_right: "https://joannaa23.notion.site/My-Maker-Portfolio-908ec956027d468c896f24f149209271",
+    computer_left: "https://www.linkedin.com/in/joanna-ayeni-a58108254/",
+};
+
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
@@ -99,6 +105,22 @@ videoTexture.flipY = true;
 window.addEventListener("mousemove", (e)=> {
     pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
     pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+});
+
+window.addEventListener("click", (e)=> {
+    if(currentIntersects.length > 0){
+        const object = currentIntersects[0].object;
+
+        Object.entries(links).forEach(([key, url]) =>{
+            if(object.name.includes(key)){
+                const newWindow = window.open();
+                newWindow.opener = null;
+                newWindow,location = url;
+                newWindow.target = "_blank";
+                newWindow.rel = "noopener no referrer";
+            }
+        });
+    }
 });
 
 //for loading the date files
@@ -265,11 +287,21 @@ for (let i = 0; i < currentIntersects.length; i++){
 }
 
 if(currentIntersects.length>0){
-    document.body.style.cursor = "pointer";
+    const currentIntersectObject = currentIntersects[0].object;
+
+    //uncomment this when i add pointer as an id to the computer screen
+    /*if(currentIntersectObject.name.includes("Pointer")){
+        document.body.style.cursor = "pointer";
+    }
+    else{
+    document.body.style.cursor = "default";
+}*/
+document.body.style.cursor = "pointer";
 }
 else{
     document.body.style.cursor = "default";
 }
+
 
     renderer.render(scene, camera);
 
