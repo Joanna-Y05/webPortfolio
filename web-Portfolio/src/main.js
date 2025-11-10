@@ -149,7 +149,16 @@ const dateTexture = textureLoader.load(
     `/images/dates/${fileName}`,
     () => console.log("texture loaded correctly"),
     undefined,
-    (err) => console.error("error loaidng texture:", err)
+    (err) => console.error("error loading texture:", err)
+);
+
+//for loading the screen files
+
+const screenRight = textureLoader.load(
+    `/images/codingPortfolio.webp`,
+    () => console.log("texture loaded correctly"),
+    undefined,
+    (err) => console.error("error loading texture:", err)
 );
 
 loader.load("/models/room_portfolio.glb", (glb)=>{
@@ -185,10 +194,12 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                     });
                 }
                 //screens
-                else if (child.name.includes("screen")){
+                else if (child.name.includes("screen_right")){
                     child.material = new THREE.MeshBasicMaterial({
-                        //map: videoTexture,
-                        color: 0x444444,
+                        map: screenRight,
+                        transparent: true,
+                        alphaTest: 0.1,
+                        side: THREE.DoubleSide
                     });
 
                 }
