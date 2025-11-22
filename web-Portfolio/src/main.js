@@ -153,22 +153,14 @@ const dateTexture = textureLoader.load(
 );
 
 //for loading the screen files
-
-const screenRight = textureLoader.load(
-    `/images/codingPortfolio.webp`,
-    () => console.log("texture loaded correctly"),
-    undefined,
-    (err) => console.error("error loading texture:", err)
-);
-
 const screen_left_Texture = textureLoader.load(
-    `/textures/computers/computer_texture_2.webp`,
+    `/images/computers/computer_texture_2.webp`,
     () => console.log("texture loaded correctly"),
     undefined,
     (err) => console.error("error loaidng texture:", err)
 );
 const screen_right_Texture = textureLoader.load(
-    `/textures/computers/computer_textures.webp`,
+    `/images/computers/computer_textures.webp`,
     () => console.log("texture loaded correctly"),
     undefined,
     (err) => console.error("error loaidng texture:", err)
