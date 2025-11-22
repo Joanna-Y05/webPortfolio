@@ -210,18 +210,12 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                 else if (child.name.includes("screen_left")){
                     child.material = new THREE.MeshBasicMaterial({
                         map: screen_left_Texture,
-                        transparent:true,
-                        alphaTest: 0.1,
-                        side: THREE.DoubleSide,
                     });
 
                 }
                 else if (child.name.includes("screen_right")){
                     child.material = new THREE.MeshBasicMaterial({
                         map: screen_right_Texture,
-                        transparent:true,
-                        alphaTest: 0.1,
-                        side: THREE.DoubleSide,
                     });
 
                 }
