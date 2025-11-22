@@ -149,7 +149,16 @@ const dateTexture = textureLoader.load(
     `/images/dates/${fileName}`,
     () => console.log("texture loaded correctly"),
     undefined,
-    (err) => console.error("error loaidng texture:", err)
+    (err) => console.error("error loading texture:", err)
+);
+
+//for loading the screen files
+
+const screenRight = textureLoader.load(
+    `/images/codingPortfolio.webp`,
+    () => console.log("texture loaded correctly"),
+    undefined,
+    (err) => console.error("error loading texture:", err)
 );
 
 const screen_left_Texture = textureLoader.load(
