@@ -166,7 +166,7 @@ const screen_right_Texture = textureLoader.load(
     undefined,
     (err) => console.error("error loaidng texture:", err)
 );
-screen_left_Texture.flipY = false;
+screen_right_Texture.flipY = false;
 
 loader.load("/models/room_portfolio.glb", (glb)=>{
     glb.scene.traverse(child=>{
