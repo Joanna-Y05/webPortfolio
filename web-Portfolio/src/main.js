@@ -152,6 +152,19 @@ const dateTexture = textureLoader.load(
     (err) => console.error("error loaidng texture:", err)
 );
 
+const screen_left_Texture = textureLoader.load(
+    `/textures/computers/computer_texture_2.webp`,
+    () => console.log("texture loaded correctly"),
+    undefined,
+    (err) => console.error("error loaidng texture:", err)
+);
+const screen_right_Texture = textureLoader.load(
+    `/textures/computers/computer_textures.webp`,
+    () => console.log("texture loaded correctly"),
+    undefined,
+    (err) => console.error("error loaidng texture:", err)
+);
+
 loader.load("/models/room_portfolio.glb", (glb)=>{
     glb.scene.traverse(child=>{
         if(child.isMesh){
@@ -185,10 +198,15 @@ loader.load("/models/room_portfolio.glb", (glb)=>{
                     });
                 }
                 //screens
-                else if (child.name.includes("screen")){
+                else if (child.name.includes("screen_left")){
                     child.material = new THREE.MeshBasicMaterial({
-                        //map: videoTexture,
-                        color: 0x444444,
+                        map: screen_left_Texture,
+                    });
+
+                }
+                else if (child.name.includes("screen_right")){
+                    child.material = new THREE.MeshBasicMaterial({
+                        map: screen_right_Texture,
                     });
 
                 }
